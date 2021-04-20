@@ -1,3 +1,5 @@
+# Lapan, Maxim. Deep Reinforcement Learning Hands-On. Second Edition ed., MITP, 2019.
+
 import gym
 import gym.spaces
 from gym.utils import seeding

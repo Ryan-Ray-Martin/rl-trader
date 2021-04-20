@@ -1,4 +1,3 @@
-from dataclasses import asdict, dataclass
 import json
 import requests
 import time
@@ -37,16 +36,13 @@ margin_multiplier = float(account_info.multiplier)
 total_buying_power = margin_multiplier * equity
 print(f'Initial total buying power = {total_buying_power}')
 
-@dataclass
-class CryptoAgg(faust.Record, validation=True, serializer="json"):
-    SYMBOL: str
-    V: list
-    O: list
-    C: list
-    H: list
-    L: list
+"""
+-----------------------------------
+enter command in CLI to run:
 
-# faust -A faust_stock worker -l info
+faust -A faust_stock worker -l info
+===================================
+"""
 
 app = faust.App(
     "stock_trader",
@@ -55,7 +51,7 @@ app = faust.App(
     store='memory://',
     partitions=1)
 
-stock_events = app.topic('STOCK_SLIDING_WINDOW')#, key_type=str, value_type=CryptoAgg)
+stock_events = app.topic('STOCK_SLIDING_WINDOW')
 stock_order = app.topic('STOCK_ORDERING_SYSTEM')
 
 async def order_signal(response):
@@ -122,7 +118,6 @@ async def stocks(stockevents):
         #print(f"<- Received response {stockevent['SYMBOL']}{':'}{resp}")
         #yield {stockevent['SYMBOL']: resp}
         target_value = (1 / 100) * total_buying_power
-
         if target_value > total_buying_power:
             target_value = total_buying_power - closing_price
         target_qty = int(target_value / closing_price)
